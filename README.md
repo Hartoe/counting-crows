@@ -26,7 +26,8 @@ ws --spa index.html
 ## Todo list
 
 - [X] Get something rendered 
-- [ ] Animate a 3d object
+- [ ] Read in a .obj file
+- [ ] Render a 3D model
 - [ ] Read in .hlsl files, instead of coding them within the .js files
 - [ ] Implement basic boids algorithm
 - [ ] shader-fy the boids algorithm

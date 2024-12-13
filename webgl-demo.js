@@ -1,6 +1,9 @@
 import { initBuffers } from "./init-buffers.js";
 import { drawScene } from "./draw-scene.js";
 
+let squareRotation = 0.0;
+let deltaTime = 0;
+
 main();
 
 function initShaderProgram(gl, vsSource, fsSource)
@@ -10,6 +13,8 @@ function initShaderProgram(gl, vsSource, fsSource)
 
     // Create the shader program
     const shaderProgram = gl.createProgram();
+    if (shaderProgram == null) throw new Error("Error creating shader program!");
+
     gl.attachShader(shaderProgram, vertexShader);
     gl.attachShader(shaderProgram, fragmentShader);
     gl.linkProgram(shaderProgram);
@@ -17,8 +22,7 @@ function initShaderProgram(gl, vsSource, fsSource)
     // If failing the program, alert
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS))
     {
-        alert(`Unable to initialize shader program: ${gl.getProgramInfoLog(shaderProgram)}`);
-        return null;
+        throw new Error(`Unable to initialize shader program: ${gl.getProgramInfoLog(shaderProgram)}`);
     }
 
     return shaderProgram;
@@ -27,6 +31,7 @@ function initShaderProgram(gl, vsSource, fsSource)
 function loadShader(gl, type, source)
 {
     const shader = gl.createShader(type);
+    if (shader == null) throw new Error("Error creating shader!");
 
     // Send source to the shader object
     gl.shaderSource(shader, source);
@@ -37,9 +42,9 @@ function loadShader(gl, type, source)
     // Check if compilation is successful
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
     {
-        alert(`An error occured compiling the shader: ${gl.getShaderInfoLog(shader)}`);
+        const info = gl.getShaderInfoLog(shader);
         gl.deleteShader(shader);
-        return null;
+        throw new Error(`An error occured compiling the shader: ${info}`);
     }
 
     return shader;
@@ -49,25 +54,30 @@ function main()
 {
     // Setup WebGL
     const canvas = document.querySelector("#gl-canvas");
-    const gl = canvas.getContext("webgl");
+    if (canvas == null) throw new Error("Could not find canvas element.");
 
-    if (gl == null)
-    {
-        alert("Unable to initialize WebGL! Your browser may not support it.");
-        return;
-    }
+    const gl = canvas.getContext("webgl");
+    if (gl == null) throw new Error("Unable to initialize WebGL! Your browser may not support it.");
 
     const vsSource = `
                     attribute vec4 aVertexPosition;
+                    attribute vec4 aVertexColor;
+
                     uniform mat4 uModelViewMatrix;
                     uniform mat4 uProjectionMatrix;
+                    
+                    varying lowp vec4 vColor;
+                    
                     void main() {
                         gl_Position =uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+                        vColor = aVertexColor;
                     }
                     `;
     const fsSource = `
+                    varying lowp vec4 vColor;
+
                     void main() {
-                        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+                        gl_FragColor = vColor;
                     }
                     `;
 
@@ -77,6 +87,7 @@ function main()
         program: shaderProgram,
         attribLocations: {
             vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
+            vertexColor: gl.getAttribLocation(shaderProgram, "aVertexColor"),
         },
         uniformLocations: {
             projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
@@ -85,5 +96,18 @@ function main()
     };
 
     const buffers = initBuffers(gl);
-    drawScene(gl, programInfo, buffers);
+
+    let then = 0;
+    function render(now) {
+        now *= 0.001;
+        deltaTime = now - then;
+        then = now;
+
+        drawScene(gl, programInfo, buffers, squareRotation);
+        squareRotation += deltaTime;
+
+        requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+
 }
