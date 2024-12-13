@@ -1,3 +1,6 @@
+import { initBuffers } from "./init-buffers.js";
+import { drawScene } from "./draw-scene.js";
+
 main();
 
 function initShaderProgram(gl, vsSource, fsSource)
@@ -12,7 +15,7 @@ function initShaderProgram(gl, vsSource, fsSource)
     gl.linkProgram(shaderProgram);
 
     // If failing the program, alert
-    if (!gl.getProgramParameters(shaderProgram, gl.LINK_STATUS))
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS))
     {
         alert(`Unable to initialize shader program: ${gl.getProgramInfoLog(shaderProgram)}`);
         return null;
@@ -32,7 +35,7 @@ function loadShader(gl, type, source)
     gl.compileShader(shader);
 
     // Check if compilation is successful
-    if (!gl.getShaderParameters(shader, gl.COMPILE_STATUS))
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
     {
         alert(`An error occured compiling the shader: ${gl.getShaderInfoLog(shader)}`);
         gl.deleteShader(shader);
@@ -81,6 +84,6 @@ function main()
         },
     };
 
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    const buffers = initBuffers(gl);
+    drawScene(gl, programInfo, buffers);
 }

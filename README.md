@@ -22,3 +22,12 @@ ws --spa index.html
 
 - Web-server should be running locally.
     If the site gives an alert, your browser doesn't support WebGL. **CHANGE BROWSER!**
+
+## Todo list
+
+- [X] Get something rendered 
+- [ ] Animate a 3d object
+- [ ] Read in .hlsl files, instead of coding them within the .js files
+- [ ] Implement basic boids algorithm
+- [ ] shader-fy the boids algorithm
+- [ ] BURDS!
