@@ -28,7 +28,8 @@ ws --spa index.html
 - [X] Get something rendered 
 - [ ] Read in a .obj file
 - [ ] Render a 3D model
-- [ ] Read in .hlsl files, instead of coding them within the .js files
+- [ ] Find out how to animate a 3D model in WebGL
+- [X] Read in .hlsl files, instead of coding them within the .js files
 - [ ] Implement basic boids algorithm
 - [ ] shader-fy the boids algorithm
 - [ ] BURDS!

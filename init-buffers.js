@@ -1,3 +1,4 @@
+// Return the different buffers to pass to the WebGL Shaders
 function initBuffers(gl)
 {
     const positionBuffer = initPositionBuffer(gl);
@@ -9,6 +10,7 @@ function initBuffers(gl)
     };
 }
 
+// Initializes the position buffer
 function initPositionBuffer(gl)
 {
     const positionBuffer = gl.createBuffer();
@@ -21,22 +23,23 @@ function initPositionBuffer(gl)
     return positionBuffer;
 }
 
+// Initializes the color buffer
 function initColorBuffer(gl)
 {
     const colors = [
+        1.0, // White
         1.0,
         1.0,
         1.0,
-        1.0,
-        1.0,
+        1.0, // Red
         0.0,
         0.0,
         1.0,
-        0.0,
+        0.0, // Green
         1.0,
         0.0,
         1.0,
-        0.0,
+        0.0, // Blue
         0.0,
         1.0,
         1.0
