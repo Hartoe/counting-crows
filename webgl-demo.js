@@ -1,5 +1,6 @@
 import { initBuffers } from "./init-buffers.js";
 import { drawScene } from "./draw-scene.js";
+import { importHLSL } from "./hlsl-reader.js";
 
 let squareRotation = 0.0;
 let deltaTime = 0;
@@ -50,7 +51,7 @@ function loadShader(gl, type, source)
     return shader;
 }
 
-function main()
+async function main()
 {
     // Setup WebGL
     const canvas = document.querySelector("#gl-canvas");
@@ -59,27 +60,8 @@ function main()
     const gl = canvas.getContext("webgl");
     if (gl == null) throw new Error("Unable to initialize WebGL! Your browser may not support it.");
 
-    const vsSource = `
-                    attribute vec4 aVertexPosition;
-                    attribute vec4 aVertexColor;
-
-                    uniform mat4 uModelViewMatrix;
-                    uniform mat4 uProjectionMatrix;
-                    
-                    varying lowp vec4 vColor;
-                    
-                    void main() {
-                        gl_Position =uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-                        vColor = aVertexColor;
-                    }
-                    `;
-    const fsSource = `
-                    varying lowp vec4 vColor;
-
-                    void main() {
-                        gl_FragColor = vColor;
-                    }
-                    `;
+    const vsSource = await importHLSL("./shaders/vertex.hlsl");
+    const fsSource = await importHLSL("./shaders/fragment.hlsl");
 
     const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
 
