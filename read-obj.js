@@ -1,12 +1,12 @@
 // Function to parse .obj file content
 async function parseOBJ() {
-  let data 
+  let data;
   // Read in an .obj file
 
   await fetch("cube.obj")
         .then((res)  => res.text())
         .then((text) => {
-            data=text;
+            data = text;
         })
         .catch((e) => console.error(e));
     // parsing
