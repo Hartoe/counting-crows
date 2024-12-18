@@ -26,8 +26,8 @@ ws --spa index.html
 ## Todo list
 
 - [X] Get something rendered 
-- [ ] Read in a .obj file
-- [ ] Render a 3D model
+- [X] Read in an .obj file
+- [X] Render a 3D model
 - [ ] Find out how to animate a 3D model in WebGL
 - [X] Read in .hlsl files, instead of coding them within the .js files
 - [ ] Make boid position/velocity shader
