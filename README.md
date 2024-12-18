@@ -30,6 +30,7 @@ ws --spa index.html
 - [ ] Render a 3D model
 - [ ] Find out how to animate a 3D model in WebGL
 - [X] Read in .hlsl files, instead of coding them within the .js files
-- [ ] Implement basic boids algorithm
-- [ ] shader-fy the boids algorithm
+- [ ] Make boid position/velocity shader
+- [ ] Implement boids structure with the shaders
+- [ ] Find a way to create, update, and pass octree structure
 - [ ] BURDS!
