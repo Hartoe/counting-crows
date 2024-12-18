@@ -1,12 +1,15 @@
 import { initBuffers } from "./init-buffers.js";
 import { drawScene } from "./draw-scene.js";
 import { parseOBJ } from "./read-obj.js";
+import { importHLSL } from "./hlsl-reader.js";
 
+// Temp values for some naïve animation approach
 let squareRotation = 0.0;
 let deltaTime = 0;
 
 main();
 
+// Loads in the shader program from two string sources
 function initShaderProgram(gl, vsSource, fsSource)
 {
     const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
@@ -29,6 +32,7 @@ function initShaderProgram(gl, vsSource, fsSource)
     return shaderProgram;
 }
 
+//  Loads a single WebGLShader element from a source string
 function loadShader(gl, type, source)
 {
     const shader = gl.createShader(type);
@@ -51,6 +55,7 @@ function loadShader(gl, type, source)
     return shader;
 }
 
+// Async because it needs to read out files
 async function main()
 {
     const obj = await parseOBJ()
@@ -63,30 +68,14 @@ async function main()
     const gl = canvas.getContext("webgl");
     if (gl == null) throw new Error("Unable to initialize WebGL! Your browser may not support it.");
 
-    const vsSource = `
-                    attribute vec4 aVertexPosition;
-                    attribute vec4 aVertexColor;
+    // Read in the vertex & fragment files
+    const vsSource = await importHLSL("./shaders/vertex.hlsl");
+    const fsSource = await importHLSL("./shaders/fragment.hlsl");
 
-                    uniform mat4 uModelViewMatrix;
-                    uniform mat4 uProjectionMatrix;
-                    
-                    varying lowp vec4 vColor;
-
-                    void main() {
-                        gl_Position =uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-                        vColor = aVertexColor;
-                    }
-                    `;
-    const fsSource = `
-                    varying lowp vec4 vColor;
-
-                    void main() {
-                        gl_FragColor = vColor;
-                    }
-                    `;
-
+    // Create the WebGLProgram that runs the shaders
     const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
 
+    // Collate the program info into an object for ease of use
     const programInfo = {
         program: shaderProgram,
         attribLocations: {
@@ -101,6 +90,7 @@ async function main()
 
     const buffers = initBuffers(gl, obj);
 
+    // Animate a rotating cube on the HTMLCanvas element
     let then = 0;
     function render(now) {
         now *= 0.001;

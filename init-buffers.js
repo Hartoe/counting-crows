@@ -33,6 +33,7 @@ function initPositionBuffer(gl, positions)
     return positionBuffer;
 }
 
+// Initializes the color buffer
 function initColorBuffer(gl)
 {
     const faceColors = [
