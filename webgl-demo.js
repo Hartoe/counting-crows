@@ -1,5 +1,6 @@
 import { initBuffers } from "./init-buffers.js";
 import { drawScene } from "./draw-scene.js";
+import { parseOBJ } from "./read-obj.js";
 
 let squareRotation = 0.0;
 let deltaTime = 0;
@@ -50,9 +51,12 @@ function loadShader(gl, type, source)
     return shader;
 }
 
-function main()
+async function main()
 {
+    await parseOBJ()
     // Setup WebGL
+
+
     const canvas = document.querySelector("#gl-canvas");
     if (canvas == null) throw new Error("Could not find canvas element.");
 
