@@ -30,13 +30,13 @@ const velFragShader = await importHLSL("./shaders/velFrag.hlsl");
 //? Find out if keeping track of the octree structure should be done fully in or partialy in the shaders
 
 // Widht * Height = number of boids
-async function runBoidsAlgorithm(width, height)
+async function runBoids(width, height)
 {
     // Build shaders
-    await passFragmentShader, passVertexShader, posFragShader, velFragShader;
+    
 
     // Build textures
-    
+
 
     // Build octtree structure and flatten to array
 
