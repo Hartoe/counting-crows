@@ -53,7 +53,7 @@ function loadShader(gl, type, source)
 
 async function main()
 {
-    await parseOBJ()
+    const obj = await parseOBJ()
     // Setup WebGL
 
 
@@ -71,7 +71,7 @@ async function main()
                     uniform mat4 uProjectionMatrix;
                     
                     varying lowp vec4 vColor;
-                    
+
                     void main() {
                         gl_Position =uProjectionMatrix * uModelViewMatrix * aVertexPosition;
                         vColor = aVertexColor;
@@ -99,7 +99,7 @@ async function main()
         },
     };
 
-    const buffers = initBuffers(gl);
+    const buffers = initBuffers(gl, obj);
 
     let then = 0;
     function render(now) {

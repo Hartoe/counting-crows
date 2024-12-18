@@ -29,9 +29,22 @@ function drawScene(gl, programInfo, buffers, squareRotation)
         squareRotation,
         [0, 0, 1]
     );
+    mat4.rotate(
+        modelViewMatrix, // Destination
+        modelViewMatrix, // Source
+        squareRotation * 0.7,
+        [0, 1, 0]
+    );
+    mat4.rotate(
+        modelViewMatrix, // Destination
+        modelViewMatrix, // Source
+        squareRotation * 0.3,
+        [1, 0, 0]
+    );
 
     setPositionAttribute(gl, buffers, programInfo);
     setColorAttribute(gl, buffers, programInfo);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
 
     gl.useProgram(programInfo.program);
     gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrix, false, projectionMatrix);
@@ -39,14 +52,15 @@ function drawScene(gl, programInfo, buffers, squareRotation)
 
     {
         const offset = 0;
-        const vertexCount = 4;
-        gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
+        const type = gl.UNSIGNED_SHORT;
+        const vertexCount = 36;
+        gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
     }
 }
 
 function setPositionAttribute(gl, buffers, programInfo)
 {
-    const numComponents = 2;
+    const numComponents = 3;
     const type = gl.FLOAT;
     const normalize = false;
     const stride = 0;
