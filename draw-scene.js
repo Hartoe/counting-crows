@@ -1,7 +1,7 @@
-// I'd love to make this TypeScript, but for some reason the 'gl-matrix' module doesn't want to play nice...
-
+// Draws a scene based on the buffers and program passed to the WebGL controller
 function drawScene(gl, programInfo, buffers, squareRotation)
 {
+    // Clear screen and enable depth filtering (things behind other things don't get drawn)
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
     gl.enable(gl.DEPTH_TEST);
@@ -9,6 +9,7 @@ function drawScene(gl, programInfo, buffers, squareRotation)
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    // Calculate camera & model matrices
     const fieldOfView = (45 * Math.PI) /180;
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
@@ -30,9 +31,11 @@ function drawScene(gl, programInfo, buffers, squareRotation)
         [0, 0, 1]
     );
 
+    // Bind the buffers to the shaders
     setPositionAttribute(gl, buffers, programInfo);
     setColorAttribute(gl, buffers, programInfo);
 
+    // Draw the elements of the buffers onto the canvas with the given shader program
     gl.useProgram(programInfo.program);
     gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrix, false, projectionMatrix);
     gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix);
@@ -44,6 +47,7 @@ function drawScene(gl, programInfo, buffers, squareRotation)
     }
 }
 
+// Binds the position buffers to the shader attributes
 function setPositionAttribute(gl, buffers, programInfo)
 {
     const numComponents = 2;
@@ -64,6 +68,7 @@ function setPositionAttribute(gl, buffers, programInfo)
     gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
 }
 
+// Binds the color buffer to the shader attributes
 function setColorAttribute(gl, buffers, programInfo)
 {
     const numComponents = 4;
