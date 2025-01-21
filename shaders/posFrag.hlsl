@@ -1,3 +1,6 @@
+// Precision for floats in fragment shaders
+precision mediump float;
+
 // Texture storing x, y, and z position of the boids
 uniform sampler2D posTex;
 

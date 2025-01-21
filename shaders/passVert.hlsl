@@ -1,6 +1,8 @@
 // Texture coords used in fragment shader
 attribute vec2 aTexCoord;
 
+attribute vec3 position;
+
 varying highp vec2 vTexCoord;
 
 void main()

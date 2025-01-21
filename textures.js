@@ -7,7 +7,7 @@ function createTexture(gl, width, height)
     const border = 0;
     const srcFormat = gl.RGBA;
     const srcType = gl.UNSIGNED_BYTE;
-    const pixel = new Uint8Array([12,12,12,255]);
+    const pixel = new Uint8Array(width * height * 4);
     gl.texImage2D(
         gl.TEXTURE_2D,
         level,
@@ -19,7 +19,7 @@ function createTexture(gl, width, height)
         srcType,
         pixel
     );
-    if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+    if (isPowerOf2(width) && isPowerOf2(height)) {
         // Yes, it's a power of 2. Generate mips.
         gl.generateMipmap(gl.TEXTURE_2D);
     } else {

@@ -1,5 +1,8 @@
+// Precision for floats in fragment shaders
+precision mediump float;
+
 // UV of texture
-varying vec2 vUv;
+varying vec2 vTexCoord;
 
 // Texture storing x, y, and z position of the boids
 uniform sampler2D posTex;
@@ -7,11 +10,17 @@ uniform sampler2D posTex;
 // Texture storing x, y, and z velocity of the boids
 uniform sampler2D velTex;
 
+// Texture size passed from JavaScript
+uniform vec2 texSize;
+
 void main()
 {
-    vec3 currentPosition = texture2D(posTex, vUv.xy).xyz;
-    vec3 currentVelocity = texture2D(velTex, vUv.xy).xyz;
-    ivec2 dim = textureSize(posTex);
+    // Get current position and velocity from textures
+    vec3 currentPosition = texture2D(posTex, vTexCoord.xy).xyz;
+    vec3 currentVelocity = texture2D(velTex, vTexCoord.xy).xyz;
+
+    // Get the size of the texture (passed as uniform)
+    vec2 dim = texSize;
 
     vec3 alignment = vec3(0,0,0);
     vec3 cohesion = vec3(0,0,0);
@@ -21,40 +30,48 @@ void main()
     float neighbourhood = 4.0;
 
     // Iterate through boids (this needed an acceleration structure, but alas...)
-    for (int x = 0; x < dim.x; x++)
+    for (int x = 0; x < int(250); x++)
     {
-        for (int y = 0; y < dim.y; y++)
+        for (int y = 0; y < int(250); y++)
         {
             // Skip boid if self
-            vec2 newUv = vec2(x,y) / dim;
-            if (newUv == vUv.xy)
+            vec2 newUv = vec2(float(x), float(y)) / dim;
+            if (newUv == vTexCoord.xy)
                 continue;
 
+            // Get position and velocity of other boids
             vec3 bPos = texture2D(posTex, newUv).xyz;
             vec3 bVel = texture2D(velTex, newUv).xyz;
+
+            // Calculate distance to other boid
             vec3 difference = currentPosition - bPos;
-            float dist = sqrt((difference.x*difference.x) + (difference.y*difference.y) + (difference.z*difference.z));
+            float dist = length(difference);  // Use length() to calculate the distance
 
             // Skip boid if outside of neighbourhood
             if (dist > neighbourhood)
                 continue;
+
             count += 1;
-            
+
             // Alignment
             alignment += bVel;
             // Cohesion
             cohesion += bPos;
             // Separation
-            separation += difference
+            separation += difference;
         }
     }
 
-    // Average the values
-    alignment = alignment / count;
-    cohesion = cohesion / count;
-    separation = separation / count;
+    // Avoid division by zero if count is zero
+    if (count > 0) {
+        alignment = alignment / float(count);
+        cohesion = cohesion / float(count);
+        separation = separation / float(count);
+    }
 
     // Add them to the velocity and update texture
     vec3 newVelocity = currentVelocity + alignment + cohesion + separation;
+
+    // Output new velocity as fragment color
     gl_FragColor = vec4(newVelocity, 1.0);
 }

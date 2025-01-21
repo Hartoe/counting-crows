@@ -21,7 +21,7 @@ async function main()
     if (gl == null) throw new Error("Unable to initialize WebGL! Your browser may not support it.");
 
     // Run Boids
-    //! runBoids(gl, 250, 250);
+    runBoids(gl, 250, 250);
 
     // Read in the vertex & fragment files
     const vsSource = await importHLSL("./shaders/vertex.hlsl");
@@ -57,6 +57,6 @@ async function main()
 
         requestAnimationFrame(render);
     }
-    requestAnimationFrame(render);
+    // requestAnimationFrame(render);
 
 }
